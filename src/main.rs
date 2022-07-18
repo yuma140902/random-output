@@ -23,6 +23,9 @@ struct Args {
     )]
     wait_ms: u64,
 
+    #[clap(long = "exit", default_value_t = 0)]
+    exit_code: i32,
+
     #[clap(long = "date", short = 'd', help = "show dates")]
     with_dates: bool,
 
@@ -97,4 +100,6 @@ fn main() {
         }
         std::thread::sleep(std::time::Duration::from_millis(args.wait_ms));
     }
+
+    std::process::exit(args.exit_code);
 }
