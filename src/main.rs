@@ -15,6 +15,14 @@ struct Args {
     #[clap(long = "e", short = 'e', default_value_t = 10)]
     stderr_lines: usize,
 
+    #[clap(
+        long = "wait",
+        short = 'w',
+        default_value_t = 0,
+        help = "wait millisecond between outputs"
+    )]
+    wait_ms: u64,
+
     #[clap(long = "date", short = 'd', help = "show dates")]
     with_dates: bool,
 
@@ -87,5 +95,6 @@ fn main() {
             Output::StdOut => println!("{}", s),
             Output::StdErr => eprintln!("{}", s),
         }
+        std::thread::sleep(std::time::Duration::from_millis(args.wait_ms));
     }
 }
