@@ -1,4 +1,4 @@
-random-output 0.1.0
+random-output 0.2.0
 Output random lines to stdout and stderr
 
 USAGE:
