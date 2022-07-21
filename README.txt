@@ -12,5 +12,7 @@ OPTIONS:
     -h, --help                Print help information
     -l, --level               show [INFO] or [ERR]
     -n, --n <STDOUT_LINES>    [default: 10]
+        --name <NAME>         name to show in output
     -V, --version             Print version information
-    -w, --wait <WAIT_MS>      wait millisecond between outputs [default: 0]
+    -w, --working-dir         output working dir
+        --wait <WAIT_MS>      wait millisecond between outputs [default: 0]

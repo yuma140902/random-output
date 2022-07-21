@@ -17,11 +17,13 @@ struct Args {
 
     #[clap(
         long = "wait",
-        short = 'w',
         default_value_t = 0,
         help = "wait millisecond between outputs"
     )]
     wait_ms: u64,
+
+    #[clap(long = "name", help = "name to show in output")]
+    name: Option<String>,
 
     #[clap(long = "exit", default_value_t = 0)]
     exit_code: i32,
@@ -38,6 +40,9 @@ struct Args {
         help = "make dates gray, [INFO] green and [ERR] red"
     )]
     with_colors: bool,
+
+    #[clap(long = "working-dir", short = 'w', help = "output working dir")]
+    with_working_dir: bool,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
@@ -51,9 +56,71 @@ fn gen_random_string(mut rng: impl rand::Rng) -> String {
     random_string::generate(rng.gen_range(10..75), &charset)
 }
 
+fn add_modifier(
+    line: &str,
+    output: Output,
+    dates: bool,
+    loglevels: bool,
+    colors: bool,
+    name: Option<&str>,
+) -> String {
+    let mut s = "".to_owned();
+
+    if dates {
+        let d = format!(
+            "{}",
+            chrono::Local::now().format("[%Y-%m-%d %H:%M:%S%.3f] ")
+        );
+        let d = if colors { format!("{}", d.grey()) } else { d };
+        s += &d;
+    }
+
+    if let Some(name) = name {
+        let n = format!("[{}] ", name);
+        let n = if colors { format!("{}", n.grey()) } else { n };
+        s += &n;
+    }
+
+    if loglevels {
+        let l = match (output, colors) {
+            (Output::StdOut, true) => Cow::Owned(format!("{}", "[INFO] ".green())),
+            (Output::StdOut, false) => Cow::Borrowed("[INFO] "),
+            (Output::StdErr, true) => Cow::Owned(format!("{}", "[ERR] ".red())),
+            (Output::StdErr, false) => Cow::Borrowed("[ERR] "),
+        };
+        s += l.borrow();
+    }
+
+    s += line;
+
+    s
+}
+
 fn main() {
     let args = Args::parse();
     let mut rng = rand::thread_rng();
+
+    if args.with_working_dir {
+        let working_dir = std::env::current_dir()
+            .map(|p| p.display().to_string())
+            .unwrap_or("(error)".to_string());
+        let msg = if args.with_colors {
+            format!("Working directory: {}", working_dir.on_dark_magenta())
+        } else {
+            format!("Working directory: {}", working_dir)
+        };
+        println!(
+            "{}",
+            add_modifier(
+                &msg,
+                Output::StdOut,
+                args.with_dates,
+                args.with_loglevels,
+                args.with_colors,
+                args.name.as_deref()
+            )
+        );
+    }
 
     let iter_stdout = iter::repeat(Output::StdOut).take(args.stdout_lines);
     let iter_stderr = iter::repeat(Output::StdErr).take(args.stderr_lines);
@@ -65,38 +132,18 @@ fn main() {
     };
 
     for output in shuffled {
-        let date = if args.with_dates {
-            let d = format!(
-                "{}",
-                chrono::Local::now().format("[%Y-%m-%d %H:%M:%S%.3f] ")
-            );
-            if args.with_colors {
-                format!("{}", d.grey())
-            } else {
-                d
-            }
-        } else {
-            "".to_owned()
-        };
-
-        let level = if args.with_loglevels {
-            match (output, args.with_colors) {
-                (Output::StdOut, true) => Cow::Owned(format!("{}", "[INFO] ".green())),
-                (Output::StdOut, false) => Cow::Borrowed("[INFO] "),
-                (Output::StdErr, true) => Cow::Owned(format!("{}", "[ERR] ".red())),
-                (Output::StdErr, false) => Cow::Borrowed("[ERR] "),
-            }
-        } else {
-            Cow::Borrowed("")
-        };
-
-        let body = gen_random_string(&mut rng);
-
-        let s = date + level.borrow() + &body;
-
+        let random = gen_random_string(&mut rng);
+        let line = add_modifier(
+            &random,
+            output,
+            args.with_dates,
+            args.with_loglevels,
+            args.with_colors,
+            args.name.as_deref(),
+        );
         match output {
-            Output::StdOut => println!("{}", s),
-            Output::StdErr => eprintln!("{}", s),
+            Output::StdOut => println!("{}", line),
+            Output::StdErr => eprintln!("{}", line),
         }
         std::thread::sleep(std::time::Duration::from_millis(args.wait_ms));
     }
