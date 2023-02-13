@@ -8,7 +8,7 @@ on:
 env:
   # Disable incremental build
   CARGO_INCREMENTAL: 0
-  PJ_NAME: tempura
+  PJ_NAME: random-output
 
 jobs:
   build:
