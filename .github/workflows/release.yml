@@ -1,0 +1,155 @@
+name: Release to GitHub and Crates.io
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  # Disable incremental build
+  CARGO_INCREMENTAL: 0
+  PJ_NAME: tempura
+
+jobs:
+  build:
+    name: Build for ${{ matrix.target }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+          - target: i686-unknown-linux-musl
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+          
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: i686-pc-windows-msvc
+            os: windows-latest
+          
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: aarch64-apple-darwin
+            os: macos-latest
+
+    steps:
+    - name: Setup | Checkout
+      uses: actions/checkout@v3
+    
+    - name: Setup | Rust Toolchain
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+    
+    - name: Build | Build
+      uses: actions-rs/cargo@v1.0.1
+      with:
+          command: build
+          args: --release --locked --target=${{ matrix.target }}
+          use-cross: ${{ matrix.os == 'ubuntu-latest' }}
+          
+    - name: Post Build | Compress artifacts [-nix]
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd target/${{ matrix.target }}/release
+        tar czvf ../../../${{ env.PJ_NAME }}-${{ matrix.target }}.tar.gz ${{ env.PJ_NAME }}
+        cd -
+          
+    - name: Post Build | Compress artifacts [Windows]
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd target/${{ matrix.target }}/release
+        7z a     ../../../${{ env.PJ_NAME }}-${{ matrix.target }}.zip    ${{ env.PJ_NAME }}.exe
+        cd -
+    
+    - name: Post Build | Upload artifacts [-nix]
+      uses: actions/upload-artifact@v3
+      if: matrix.os != 'windows-latest'
+      with:
+        name: ${{ env.PJ_NAME }}-${{ matrix.target }}.tar.gz
+        path: ${{ env.PJ_NAME }}-${{ matrix.target }}.tar.gz
+    
+    - name: Post Build | Upload artifacts [Windows]
+      uses: actions/upload-artifact@v3
+      if: matrix.os == 'windows-latest'
+      with:
+        name: ${{ env.PJ_NAME }}-${{ matrix.target }}.zip
+        path: ${{ env.PJ_NAME }}-${{ matrix.target }}.zip
+  
+  changelog:
+    name: Generate and commit changelog for ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changes }}
+    steps:
+      - name: Setup | Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup | Go
+        uses: actions/setup-go@v3
+      
+      - name: Setup | Install git-chglog
+        run: go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
+      
+      - name: Generate changelog
+        run: |
+          /home/runner/go/bin/git-chglog ${{ github.ref_name }} | tee CHANGELOG-${{ github.ref_name }}.md
+          /home/runner/go/bin/git-chglog ..${{ github.ref_name }} | tee CHANGELOG.md
+      
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: master
+          commit_message: 'doc: update CHANGELOG.md for ${{ github.ref_name }} [skip ci]'
+          file_pattern: CHANGELOG.md
+          
+      - name: Upload CHANGELOG-${{ github.ref_name }}.md
+        uses: actions/upload-artifact@v3
+        with:
+          name: changelog
+          path: CHANGELOG-${{ github.ref_name }}.md
+          
+      - name: Upload CHANGELOG.md
+        uses: actions/upload-artifact@v3
+        with:
+          name: changelog-all
+          path: CHANGELOG.md
+
+  github_release:
+    name: Make a new GitHub release for ${{ github.ref_name }}
+    needs: [build, changelog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        
+      - name: Add Artifacts to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.PJ_NAME }}-*/${{ env.PJ_NAME }}-*
+          body_path: changelog/CHANGELOG-${{ github.ref_name }}.md
+          tag_name: ${{ github.ref_name }}
+
+  crates_io_publish:
+    name: Publish ${{ github.ref_name }} to Crates.io
+    needs: [build, changelog]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+      
+      - name: Publish
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
