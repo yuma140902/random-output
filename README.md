@@ -1,6 +1,11 @@
-random-output 0.2.0
-Output random lines to stdout and stderr
+# random-output
 
+[![](https://badgen.net/crates/v/random-output?color=blue)](https://crates.io/crates/random-output)
+[![](https://docs.rs/random-output/badge.svg)](https://docs.rs/random-output/)
+
+Output random lines to stdout and stderr. Useful for tests for shell scripts and automations.
+
+```
 USAGE:
     random-output.exe [OPTIONS]
 
@@ -16,3 +21,4 @@ OPTIONS:
     -V, --version             Print version information
     -w, --working-dir         output working dir
         --wait <WAIT_MS>      wait millisecond between outputs [default: 0]
+```
