@@ -10,11 +10,13 @@
 
 ### :construction_worker: Build System
 
+* fix PJ_NAME
 * add git-chglog configs
 * add release workflow
 
 ### :memo: Documentation Changes
 
+* update CHANGELOG.md for v0.2.0 [skip ci]
 * remove README.txt, add README.md
 
 ### Pull Requests
