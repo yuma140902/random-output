@@ -26,8 +26,32 @@ fn add_modifier(
     colors: bool,
     prefix: &str,
     suffix: &str,
+    prefix_err: Option<&str>,
+    suffix_err: Option<&str>,
 ) -> String {
     let mut s = "".to_owned();
+
+    let prefix_err = if let Some(prefix_err) = prefix_err {
+        prefix_err
+    } else {
+        prefix
+    };
+
+    let prefix = match output {
+        Output::StdOut => prefix,
+        Output::StdErr => prefix_err,
+    };
+
+    let suffix_err = if let Some(suffix_err) = suffix_err {
+        suffix_err
+    } else {
+        suffix
+    };
+
+    let suffix = match output {
+        Output::StdOut => suffix,
+        Output::StdErr => suffix_err,
+    };
 
     if dates {
         let d = format!(
@@ -79,6 +103,8 @@ fn main() {
                 args.with_colors,
                 &args.prefix,
                 &args.suffix,
+                args.prefix_err.as_deref(),
+                args.suffix_err.as_deref(),
             )
         );
     }
@@ -102,6 +128,8 @@ fn main() {
             args.with_colors,
             &args.prefix,
             &args.suffix,
+            args.prefix_err.as_deref(),
+            args.suffix_err.as_deref(),
         );
         match output {
             Output::StdOut => println!("{}", line),
