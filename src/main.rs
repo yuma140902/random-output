@@ -1,7 +1,7 @@
 use clap::Parser;
 use crossterm::style::Stylize;
 use rand::seq::SliceRandom;
-use random_output::Args;
+use random_output::args::Args;
 use std::{
     borrow::{Borrow, Cow},
     iter,
