@@ -15,7 +15,7 @@ enum Output {
 
 fn gen_random_string(mut rng: impl rand::Rng) -> String {
     let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 \t!\"#$%&'(),./\\;:@[]-^<>?_+*`{}=~|";
-    random_string::generate(rng.gen_range(10..75), &charset)
+    random_string::generate(rng.gen_range(10..75), charset)
 }
 
 #[derive(Debug)]
