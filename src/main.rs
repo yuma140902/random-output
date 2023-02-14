@@ -44,7 +44,7 @@ impl<'a> From<&'a Args> for Modifier<'a> {
 }
 
 fn add_modifier(line: &str, output: Output, modifier: &Modifier) -> String {
-    let mut s = "".to_owned();
+    let mut s = String::new();
 
     let prefix_err = if let Some(prefix_err) = modifier.prefix_err {
         prefix_err
@@ -110,7 +110,7 @@ fn main() {
         let msg = if args.with_colors {
             format!("Working directory: {}", working_dir.on_dark_magenta())
         } else {
-            format!("Working directory: {}", working_dir)
+            format!("Working directory: {working_dir}")
         };
         println!(
             "{}",
@@ -131,8 +131,8 @@ fn main() {
         let random = gen_random_string(&mut rng);
         let line = add_modifier(&random, output, &Modifier::from(&args));
         match output {
-            Output::StdOut => println!("{}", line),
-            Output::StdErr => eprintln!("{}", line),
+            Output::StdOut => println!("{line}"),
+            Output::StdErr => eprintln!("{line}"),
         }
         std::thread::sleep(std::time::Duration::from_millis(args.wait_ms));
     }
