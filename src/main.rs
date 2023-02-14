@@ -1,49 +1,11 @@
 use clap::Parser;
 use crossterm::style::Stylize;
 use rand::seq::SliceRandom;
+use random_output::Args;
 use std::{
     borrow::{Borrow, Cow},
     iter,
 };
-
-#[derive(Debug, Parser)]
-#[clap(author, version, about = "Output random lines to stdout and stderr")]
-struct Args {
-    #[clap(long = "n", short = 'n', default_value_t = 10)]
-    stdout_lines: usize,
-
-    #[clap(long = "e", short = 'e', default_value_t = 10)]
-    stderr_lines: usize,
-
-    #[clap(
-        long = "wait",
-        default_value_t = 0,
-        help = "wait millisecond between outputs"
-    )]
-    wait_ms: u64,
-
-    #[clap(long = "name", help = "name to show in output")]
-    name: Option<String>,
-
-    #[clap(long = "exit", default_value_t = 0)]
-    exit_code: i32,
-
-    #[clap(long = "date", short = 'd', help = "show dates")]
-    with_dates: bool,
-
-    #[clap(long = "level", short = 'l', help = "show [INFO] or [ERR]")]
-    with_loglevels: bool,
-
-    #[clap(
-        long = "color",
-        short = 'c',
-        help = "make dates gray, [INFO] green and [ERR] red"
-    )]
-    with_colors: bool,
-
-    #[clap(long = "working-dir", short = 'w', help = "output working dir")]
-    with_working_dir: bool,
-}
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 enum Output {
