@@ -36,56 +36,39 @@ pub enum Output {
 }
 
 pub fn add_modifier_to_line(line: &str, output: Output, modifier: &Modifier) -> String {
-    let mut s = String::new();
-
-    let prefix_err = if let Some(prefix_err) = modifier.prefix_err {
-        prefix_err
-    } else {
-        modifier.prefix
-    };
-
     let prefix = match output {
         Output::StdOut => modifier.prefix,
-        Output::StdErr => prefix_err,
-    };
-
-    let suffix_err = if let Some(suffix_err) = modifier.suffix_err {
-        suffix_err
-    } else {
-        modifier.suffix
+        Output::StdErr => modifier.prefix_err.unwrap_or(modifier.prefix),
     };
 
     let suffix = match output {
         Output::StdOut => modifier.suffix,
-        Output::StdErr => suffix_err,
+        Output::StdErr => modifier.suffix_err.unwrap_or(modifier.suffix),
     };
 
-    if modifier.dates {
+    let date = if modifier.dates {
         let d = format!("{}", time::now().format("[%Y-%m-%d %H:%M:%S%.3f] "));
-        let d = if modifier.colors {
+        Cow::Owned(if modifier.colors {
             format!("{}", d.grey())
         } else {
             d
-        };
-        s += &d;
-    }
+        })
+    } else {
+        Cow::Borrowed("")
+    };
 
-    s = prefix.to_string() + &s;
-
-    if modifier.loglevels {
-        let l = match (output, modifier.colors) {
+    let loglevel = if modifier.loglevels {
+        match (output, modifier.colors) {
             (Output::StdOut, true) => Cow::Owned(format!("{}", "[INFO] ".green())),
             (Output::StdOut, false) => Cow::Borrowed("[INFO] "),
             (Output::StdErr, true) => Cow::Owned(format!("{}", "[ERR] ".red())),
             (Output::StdErr, false) => Cow::Borrowed("[ERR] "),
-        };
-        s += l.borrow();
-    }
+        }
+    } else {
+        Cow::Borrowed("")
+    };
 
-    s += line;
-    s += suffix;
-
-    s
+    prefix.to_string() + date.borrow() + loglevel.borrow() + line + suffix
 }
 
 #[cfg(test)]
