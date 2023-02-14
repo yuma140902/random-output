@@ -1,49 +1,11 @@
 use clap::Parser;
 use crossterm::style::Stylize;
 use rand::seq::SliceRandom;
+use random_output::Args;
 use std::{
     borrow::{Borrow, Cow},
     iter,
 };
-
-#[derive(Debug, Parser)]
-#[clap(author, version, about = "Output random lines to stdout and stderr")]
-struct Args {
-    #[clap(long = "n", short = 'n', default_value_t = 10)]
-    stdout_lines: usize,
-
-    #[clap(long = "e", short = 'e', default_value_t = 10)]
-    stderr_lines: usize,
-
-    #[clap(
-        long = "wait",
-        default_value_t = 0,
-        help = "wait millisecond between outputs"
-    )]
-    wait_ms: u64,
-
-    #[clap(long = "name", help = "name to show in output")]
-    name: Option<String>,
-
-    #[clap(long = "exit", default_value_t = 0)]
-    exit_code: i32,
-
-    #[clap(long = "date", short = 'd', help = "show dates")]
-    with_dates: bool,
-
-    #[clap(long = "level", short = 'l', help = "show [INFO] or [ERR]")]
-    with_loglevels: bool,
-
-    #[clap(
-        long = "color",
-        short = 'c',
-        help = "make dates gray, [INFO] green and [ERR] red"
-    )]
-    with_colors: bool,
-
-    #[clap(long = "working-dir", short = 'w', help = "output working dir")]
-    with_working_dir: bool,
-}
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 enum Output {
@@ -62,9 +24,34 @@ fn add_modifier(
     dates: bool,
     loglevels: bool,
     colors: bool,
-    name: Option<&str>,
+    prefix: &str,
+    suffix: &str,
+    prefix_err: Option<&str>,
+    suffix_err: Option<&str>,
 ) -> String {
     let mut s = "".to_owned();
+
+    let prefix_err = if let Some(prefix_err) = prefix_err {
+        prefix_err
+    } else {
+        prefix
+    };
+
+    let prefix = match output {
+        Output::StdOut => prefix,
+        Output::StdErr => prefix_err,
+    };
+
+    let suffix_err = if let Some(suffix_err) = suffix_err {
+        suffix_err
+    } else {
+        suffix
+    };
+
+    let suffix = match output {
+        Output::StdOut => suffix,
+        Output::StdErr => suffix_err,
+    };
 
     if dates {
         let d = format!(
@@ -75,11 +62,7 @@ fn add_modifier(
         s += &d;
     }
 
-    if let Some(name) = name {
-        let n = format!("[{}] ", name);
-        let n = if colors { format!("{}", n.grey()) } else { n };
-        s += &n;
-    }
+    s = prefix.to_string() + &s;
 
     if loglevels {
         let l = match (output, colors) {
@@ -92,6 +75,7 @@ fn add_modifier(
     }
 
     s += line;
+    s += suffix;
 
     s
 }
@@ -117,7 +101,10 @@ fn main() {
                 args.with_dates,
                 args.with_loglevels,
                 args.with_colors,
-                args.name.as_deref()
+                &args.prefix,
+                &args.suffix,
+                args.prefix_err.as_deref(),
+                args.suffix_err.as_deref(),
             )
         );
     }
@@ -139,7 +126,10 @@ fn main() {
             args.with_dates,
             args.with_loglevels,
             args.with_colors,
-            args.name.as_deref(),
+            &args.prefix,
+            &args.suffix,
+            args.prefix_err.as_deref(),
+            args.suffix_err.as_deref(),
         );
         match output {
             Output::StdOut => println!("{}", line),
