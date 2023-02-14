@@ -15,57 +15,76 @@ enum Output {
 
 fn gen_random_string(mut rng: impl rand::Rng) -> String {
     let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 \t!\"#$%&'(),./\\;:@[]-^<>?_+*`{}=~|";
-    random_string::generate(rng.gen_range(10..75), &charset)
+    random_string::generate(rng.gen_range(10..75), charset)
 }
 
-fn add_modifier(
-    line: &str,
-    output: Output,
+#[derive(Debug)]
+struct Modifier<'a> {
     dates: bool,
     loglevels: bool,
     colors: bool,
-    prefix: &str,
-    suffix: &str,
-    prefix_err: Option<&str>,
-    suffix_err: Option<&str>,
-) -> String {
+    prefix: &'a str,
+    suffix: &'a str,
+    prefix_err: Option<&'a str>,
+    suffix_err: Option<&'a str>,
+}
+
+impl<'a> From<&'a Args> for Modifier<'a> {
+    fn from(args: &'a Args) -> Self {
+        Modifier {
+            dates: args.with_dates,
+            loglevels: args.with_dates,
+            colors: args.with_colors,
+            prefix: &args.prefix,
+            suffix: &args.suffix,
+            prefix_err: args.prefix_err.as_deref(),
+            suffix_err: args.suffix_err.as_deref(),
+        }
+    }
+}
+
+fn add_modifier(line: &str, output: Output, modifier: &Modifier) -> String {
     let mut s = "".to_owned();
 
-    let prefix_err = if let Some(prefix_err) = prefix_err {
+    let prefix_err = if let Some(prefix_err) = modifier.prefix_err {
         prefix_err
     } else {
-        prefix
+        modifier.prefix
     };
 
     let prefix = match output {
-        Output::StdOut => prefix,
+        Output::StdOut => modifier.prefix,
         Output::StdErr => prefix_err,
     };
 
-    let suffix_err = if let Some(suffix_err) = suffix_err {
+    let suffix_err = if let Some(suffix_err) = modifier.suffix_err {
         suffix_err
     } else {
-        suffix
+        modifier.suffix
     };
 
     let suffix = match output {
-        Output::StdOut => suffix,
+        Output::StdOut => modifier.suffix,
         Output::StdErr => suffix_err,
     };
 
-    if dates {
+    if modifier.dates {
         let d = format!(
             "{}",
             chrono::Local::now().format("[%Y-%m-%d %H:%M:%S%.3f] ")
         );
-        let d = if colors { format!("{}", d.grey()) } else { d };
+        let d = if modifier.colors {
+            format!("{}", d.grey())
+        } else {
+            d
+        };
         s += &d;
     }
 
     s = prefix.to_string() + &s;
 
-    if loglevels {
-        let l = match (output, colors) {
+    if modifier.loglevels {
+        let l = match (output, modifier.colors) {
             (Output::StdOut, true) => Cow::Owned(format!("{}", "[INFO] ".green())),
             (Output::StdOut, false) => Cow::Borrowed("[INFO] "),
             (Output::StdErr, true) => Cow::Owned(format!("{}", "[ERR] ".red())),
@@ -95,17 +114,7 @@ fn main() {
         };
         println!(
             "{}",
-            add_modifier(
-                &msg,
-                Output::StdOut,
-                args.with_dates,
-                args.with_loglevels,
-                args.with_colors,
-                &args.prefix,
-                &args.suffix,
-                args.prefix_err.as_deref(),
-                args.suffix_err.as_deref(),
-            )
+            add_modifier(&msg, Output::StdOut, &Modifier::from(&args))
         );
     }
 
@@ -120,17 +129,7 @@ fn main() {
 
     for output in shuffled {
         let random = gen_random_string(&mut rng);
-        let line = add_modifier(
-            &random,
-            output,
-            args.with_dates,
-            args.with_loglevels,
-            args.with_colors,
-            &args.prefix,
-            &args.suffix,
-            args.prefix_err.as_deref(),
-            args.suffix_err.as_deref(),
-        );
+        let line = add_modifier(&random, output, &Modifier::from(&args));
         match output {
             Output::StdOut => println!("{}", line),
             Output::StdErr => eprintln!("{}", line),
