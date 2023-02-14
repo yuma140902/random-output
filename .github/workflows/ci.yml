@@ -27,4 +27,4 @@ jobs:
       run: cargo fmt --all -- --check
 
     - name: Lint
-      run: cargo clippy --tests --workspace -- -D warnings -D clippy::pedantic
+      run: cargo clippy --tests --workspace -- -D warnings -W clippy::pedantic
