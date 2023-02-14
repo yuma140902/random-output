@@ -87,3 +87,117 @@ pub enum Output {
 
     s
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use chrono::TimeZone;
+
+    #[test]
+    fn null_modifier_does_nothing() {
+        let modifier = Modifier {
+            dates: false,
+            loglevels: false,
+            colors: false,
+            prefix: "",
+            suffix: "",
+            prefix_err: None,
+            suffix_err: None,
+        };
+
+        for output in [Output::StdOut, Output::StdErr] {
+            assert_eq!(
+                add_modifier_to_line("hogehoge", output, &modifier),
+                "hogehoge"
+            );
+        }
+    }
+
+    #[test]
+    fn prefix_and_suffix() {
+        let modifier = Modifier {
+            dates: false,
+            loglevels: false,
+            colors: false,
+            prefix: "prefix",
+            suffix: "suffix",
+            prefix_err: Some("prefix-err"),
+            suffix_err: Some("suffix-err"),
+        };
+
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdOut, &modifier),
+            "prefixhogesuffix"
+        );
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdErr, &modifier),
+            "prefix-errhogesuffix-err"
+        );
+    }
+
+    #[test]
+    fn prefix_err_and_suffix_err_defaults_to_prefix_and_suffix() {
+        let modifier = Modifier {
+            dates: false,
+            loglevels: false,
+            colors: false,
+            prefix: "prefix",
+            suffix: "suffix",
+            prefix_err: None,
+            suffix_err: None,
+        };
+
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdErr, &modifier),
+            "prefixhogesuffix"
+        );
+    }
+
+    #[test]
+    fn loglevels() {
+        let modifier = Modifier {
+            dates: false,
+            loglevels: true,
+            colors: false,
+            prefix: "",
+            suffix: "",
+            prefix_err: None,
+            suffix_err: None,
+        };
+
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdOut, &modifier),
+            "[INFO] hoge"
+        );
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdErr, &modifier),
+            "[ERR] hoge"
+        );
+    }
+
+    #[test]
+    fn prefix_dates_loglevels_come_in_order() {
+        let dt: chrono::NaiveDateTime = "2022-09-02T10:11:12".parse().unwrap();
+        let ldt = chrono::Local.from_local_datetime(&dt).unwrap();
+        time::mock_time::set_mock_time(ldt);
+
+        let modifier = Modifier {
+            dates: true,
+            loglevels: true,
+            colors: false,
+            prefix: "prefix",
+            suffix: "",
+            prefix_err: Some("prefix"),
+            suffix_err: None,
+        };
+
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdOut, &modifier),
+            "prefix[2022-09-02 10:11:12.000] [INFO] hoge"
+        );
+        assert_eq!(
+            add_modifier_to_line("hoge", Output::StdErr, &modifier),
+            "prefix[2022-09-02 10:11:12.000] [ERR] hoge"
+        );
+    }
+}
