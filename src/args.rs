@@ -3,10 +3,10 @@ use clap::Parser;
 #[derive(Debug, Parser)]
 #[clap(author, version, about = "Output random lines to stdout and stderr")]
 pub struct Args {
-    #[clap(long = "n", short = 'n', default_value_t = 10)]
+    #[clap(short = 'n', default_value_t = 10)]
     pub stdout_lines: usize,
 
-    #[clap(long = "e", short = 'e', default_value_t = 10)]
+    #[clap(short = 'e', default_value_t = 10)]
     pub stderr_lines: usize,
 
     #[clap(
