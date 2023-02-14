@@ -35,7 +35,7 @@ pub enum Output {
     StdErr,
 }
 
-#[must_use] pub fn add_modifier_to_line(line: &str, output: Output, modifier: &Modifier) -> String {
+pub fn add_modifier_to_line(line: &str, output: Output, modifier: &Modifier) -> String {
     let mut s = String::new();
 
     let prefix_err = if let Some(prefix_err) = modifier.prefix_err {
