@@ -1,4 +1,6 @@
 use crate::args::Args;
+use crate::time;
+
 use crossterm::style::Stylize;
 use std::borrow::{Borrow, Cow};
 
@@ -59,10 +61,7 @@ pub enum Output {
     };
 
     if modifier.dates {
-        let d = format!(
-            "{}",
-            chrono::Local::now().format("[%Y-%m-%d %H:%M:%S%.3f] ")
-        );
+        let d = format!("{}", time::now().format("[%Y-%m-%d %H:%M:%S%.3f] "));
         let d = if modifier.colors {
             format!("{}", d.grey())
         } else {
