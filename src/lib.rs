@@ -16,9 +16,6 @@ pub struct Args {
     )]
     pub wait_ms: u64,
 
-    #[clap(long = "name", help = "name to show in output")]
-    pub name: Option<String>,
-
     #[clap(long = "prefix", help = "prefix to add each line", default_value = "")]
     pub prefix: String,
 

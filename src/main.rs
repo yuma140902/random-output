@@ -24,7 +24,6 @@ fn add_modifier(
     dates: bool,
     loglevels: bool,
     colors: bool,
-    name: Option<&str>,
     prefix: &str,
     suffix: &str,
 ) -> String {
@@ -37,12 +36,6 @@ fn add_modifier(
         );
         let d = if colors { format!("{}", d.grey()) } else { d };
         s += &d;
-    }
-
-    if let Some(name) = name {
-        let n = format!("[{}] ", name);
-        let n = if colors { format!("{}", n.grey()) } else { n };
-        s += &n;
     }
 
     s = prefix.to_string() + &s;
@@ -84,7 +77,6 @@ fn main() {
                 args.with_dates,
                 args.with_loglevels,
                 args.with_colors,
-                args.name.as_deref(),
                 &args.prefix,
                 &args.suffix,
             )
@@ -108,7 +100,6 @@ fn main() {
             args.with_dates,
             args.with_loglevels,
             args.with_colors,
-            args.name.as_deref(),
             &args.prefix,
             &args.suffix,
         );
