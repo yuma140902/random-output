@@ -25,6 +25,8 @@ fn add_modifier(
     loglevels: bool,
     colors: bool,
     name: Option<&str>,
+    prefix: &str,
+    suffix: &str,
 ) -> String {
     let mut s = "".to_owned();
 
@@ -43,6 +45,8 @@ fn add_modifier(
         s += &n;
     }
 
+    s = prefix.to_string() + &s;
+
     if loglevels {
         let l = match (output, colors) {
             (Output::StdOut, true) => Cow::Owned(format!("{}", "[INFO] ".green())),
@@ -54,6 +58,7 @@ fn add_modifier(
     }
 
     s += line;
+    s += suffix;
 
     s
 }
@@ -79,7 +84,9 @@ fn main() {
                 args.with_dates,
                 args.with_loglevels,
                 args.with_colors,
-                args.name.as_deref()
+                args.name.as_deref(),
+                &args.prefix,
+                &args.suffix,
             )
         );
     }
@@ -102,6 +109,8 @@ fn main() {
             args.with_loglevels,
             args.with_colors,
             args.name.as_deref(),
+            &args.prefix,
+            &args.suffix,
         );
         match output {
             Output::StdOut => println!("{}", line),

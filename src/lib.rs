@@ -19,6 +19,12 @@ pub struct Args {
     #[clap(long = "name", help = "name to show in output")]
     pub name: Option<String>,
 
+    #[clap(long = "prefix", help = "prefix to add each line", default_value = "")]
+    pub prefix: String,
+
+    #[clap(long = "suffix", help = "suffix to add each line", default_value = "")]
+    pub suffix: String,
+
     #[clap(long = "exit", default_value_t = 0)]
     pub exit_code: i32,
 
