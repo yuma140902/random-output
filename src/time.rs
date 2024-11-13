@@ -14,7 +14,7 @@ pub mod mock_time {
     use std::cell::RefCell;
 
     thread_local! {
-        static MOCK_TIME: RefCell<Option<DateTime<Local>>> = RefCell::new(None);
+        static MOCK_TIME: RefCell<Option<DateTime<Local>>> = const {RefCell::new(None)};
     }
 
     pub fn now() -> DateTime<Local> {
