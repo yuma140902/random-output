@@ -1,4 +1,30 @@
 
+<a name="v0.3.1"></a>
+## [v0.3.1](https://github.com/yuma140902/tempura/compare/v0.3.0...v0.3.1)
+
+> 2024-11-14
+
+### Build
+
+* update dependencies
+
+### :wrench: Chores
+
+* fix lint error
+
+### :memo: Documentation Changes
+
+* update CHANGELOG.md for v0.3.0 [skip ci]
+
+### :recycle: Code Refactoring
+
+* use new clap attributes
+
+### Pull Requests
+
+* Merge pull request [#9](https://github.com/yuma140902/tempura/issues/9) from yuma140902/update-deps
+
+
 <a name="v0.3.0"></a>
 ## [v0.3.0](https://github.com/yuma140902/tempura/compare/v0.2.0...v0.3.0)
 
