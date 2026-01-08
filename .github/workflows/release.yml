@@ -74,14 +74,14 @@ jobs:
         cd -
     
     - name: Post Build | Upload artifacts [-nix]
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       if: matrix.os != 'windows-latest'
       with:
         name: ${{ env.PJ_NAME }}-${{ matrix.target }}.tar.gz
         path: ${{ env.PJ_NAME }}-${{ matrix.target }}.tar.gz
     
     - name: Post Build | Upload artifacts [Windows]
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-latest'
       with:
         name: ${{ env.PJ_NAME }}-${{ matrix.target }}.zip
@@ -117,13 +117,13 @@ jobs:
           file_pattern: CHANGELOG.md
           
       - name: Upload CHANGELOG-${{ github.ref_name }}.md
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: changelog
           path: CHANGELOG-${{ github.ref_name }}.md
           
       - name: Upload CHANGELOG.md
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: changelog-all
           path: CHANGELOG.md
