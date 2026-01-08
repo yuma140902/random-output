@@ -99,7 +99,7 @@ jobs:
           fetch-depth: 0
       
       - name: Setup | Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
       
       - name: Setup | Install git-chglog
         run: go install github.com/git-chglog/git-chglog/cmd/git-chglog@latest
