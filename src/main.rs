@@ -1,3 +1,7 @@
+#![deny(rust_2018_idioms)]
+#![deny(clippy::all)]
+#![deny(clippy::nursery)]
+
 use clap::Parser;
 use crossterm::style::Stylize;
 use rand::seq::SliceRandom;
@@ -19,7 +23,7 @@ fn main() {
     if args.with_working_dir {
         let working_dir = std::env::current_dir()
             .map(|p| p.display().to_string())
-            .unwrap_or("(error)".to_string());
+            .unwrap_or_else(|_| "(error)".to_string());
         let msg = if args.with_colors {
             format!("Working directory: {}", working_dir.on_dark_magenta())
         } else {
