@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3](https://github.com/yuma140902/random-output/compare/v0.3.2...v0.3.3) - 2026-07-19
+
+### Other
+
+- update to rust edition 2024 ([#52](https://github.com/yuma140902/random-output/pull/52))
+- set resolver version and rust-version ([#51](https://github.com/yuma140902/random-output/pull/51))
+- update rand from 0.8 to 0.10 ([#50](https://github.com/yuma140902/random-output/pull/50))
+- update dependencies ([#49](https://github.com/yuma140902/random-output/pull/49))
+
 ## [0.3.2](https://github.com/yuma140902/random-output/compare/v0.3.1...v0.3.2) - 2026-07-19
 
 ### Other
