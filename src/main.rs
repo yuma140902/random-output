@@ -11,14 +11,14 @@ use random_output::modifier;
 use random_output::modifier::Modifier;
 use random_output::modifier::Output;
 
-fn gen_random_string(mut rng: impl rand::Rng) -> String {
+fn gen_random_string(mut rng: impl rand::RngExt) -> String {
     let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 \t!\"#$%&'(),./\\;:@[]-^<>?_+*`{}=~|";
-    random_string::generate(rng.gen_range(10..75), charset)
+    random_string::generate(rng.random_range(10..75), charset)
 }
 
 fn main() {
     let args = Args::parse();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
     if args.with_working_dir {
         let working_dir = std::env::current_dir()
