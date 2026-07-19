@@ -1,3 +1,5 @@
 [workspace]
 pr_draft = true
 release_always = false
+git_release_draft = true
+git_release_latest = false
