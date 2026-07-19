@@ -28,6 +28,8 @@ jobs:
           - cargo doc --no-deps --document-private-items --verbose
           - cargo fmt --check
     runs-on: ubuntu-latest
+    permissions: {}
+    timeout-minutes: 15
 
     name: ${{ matrix.cmd }}
 
