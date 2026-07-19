@@ -1,7 +1,6 @@
 use clap::Parser;
 use crossterm::style::Stylize;
 use rand::seq::SliceRandom;
-use std::iter;
 
 use random_output::args::Args;
 use random_output::modifier;
@@ -32,8 +31,8 @@ fn main() {
         );
     }
 
-    let iter_stdout = iter::repeat(Output::StdOut).take(args.stdout_lines);
-    let iter_stderr = iter::repeat(Output::StdErr).take(args.stderr_lines);
+    let iter_stdout = std::iter::repeat_n(Output::StdOut, args.stdout_lines);
+    let iter_stderr = std::iter::repeat_n(Output::StdErr, args.stderr_lines);
     let iter_chain = iter_stdout.chain(iter_stderr);
     let shuffled: Vec<_> = {
         let mut v: Vec<_> = iter_chain.collect();
