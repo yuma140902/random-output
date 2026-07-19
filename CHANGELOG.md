@@ -1,31 +1,3 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-## [0.3.2](https://github.com/yuma140902/random-output/compare/v0.3.1...v0.3.2) - 2026-07-19
-
-### Other
-
-- change artifact download location ([#44](https://github.com/yuma140902/random-output/pull/44))
-- Revert "chore: release v0.3.2 ([#42](https://github.com/yuma140902/random-output/pull/42))" ([#43](https://github.com/yuma140902/random-output/pull/43))
-- release v0.3.2 ([#42](https://github.com/yuma140902/random-output/pull/42))
-- fix hash ([#41](https://github.com/yuma140902/random-output/pull/41))
-- Revert "chore: release v0.3.2 ([#31](https://github.com/yuma140902/random-output/pull/31))" ([#40](https://github.com/yuma140902/random-output/pull/40))
-- release v0.3.2 ([#31](https://github.com/yuma140902/random-output/pull/31))
-- add renovate ([#35](https://github.com/yuma140902/random-output/pull/35))
-- enable pedantic clippy rules ([#33](https://github.com/yuma140902/random-output/pull/33))
-- add ghalint
-- update main ci ([#32](https://github.com/yuma140902/random-output/pull/32))
-- CRLF to LF ([#30](https://github.com/yuma140902/random-output/pull/30))
-- update release workflow ([#28](https://github.com/yuma140902/random-output/pull/28))
-- update in accordance with clippy ([#29](https://github.com/yuma140902/random-output/pull/29))
-- Create dependabot.yml
-- update CHANGELOG.md for v0.3.1 [skip ci]
 
 <a name="v0.3.1"></a>
 ## [v0.3.1](https://github.com/yuma140902/tempura/compare/v0.3.0...v0.3.1)
