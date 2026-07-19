@@ -35,7 +35,7 @@ pub enum Output {
     StdErr,
 }
 
-pub fn add_modifier_to_line(line: &str, output: Output, modifier: &Modifier) -> String {
+pub fn add_modifier_to_line(line: &str, output: Output, modifier: &Modifier<'_>) -> String {
     let prefix = match output {
         Output::StdOut => modifier.prefix,
         Output::StdErr => modifier.prefix_err.unwrap_or(modifier.prefix),
