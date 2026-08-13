@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5](https://github.com/yuma140902/random-output/compare/v0.3.4...v0.3.5) - 2026-08-13
+
+### Other
+
+- *(deps)* update swatinem/rust-cache digest to 6323deb ([#59](https://github.com/yuma140902/random-output/pull/59))
+
 ## [0.3.4](https://github.com/yuma140902/random-output/compare/v0.3.3...v0.3.4) - 2026-08-03
 
 ### Other
