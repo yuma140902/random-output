@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.10](https://github.com/yuma140902/random-output/compare/v0.3.9...v0.3.10) - 2026-10-03
+
+### Other
+
+- schedule Renovate for Saturday mornings JST ([#73](https://github.com/yuma140902/random-output/pull/73))
+- change lockFileMaintenance schedule ([#71](https://github.com/yuma140902/random-output/pull/71))
+
 ## [0.3.9](https://github.com/yuma140902/random-output/compare/v0.3.8...v0.3.9) - 2026-09-20
 
 ### Other
