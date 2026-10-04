@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.10](https://github.com/yuma140902/random-output/compare/v0.3.9...v0.3.10) - 2026-10-04
+
+### Other
+
+- *(deps)* lock file maintenance ([#68](https://github.com/yuma140902/random-output/pull/68))
+- *(deps)* update rust crate rand to v0.10.3 ([#70](https://github.com/yuma140902/random-output/pull/70))
+- *(deps)* update release-plz/action digest to b8d6b54 ([#69](https://github.com/yuma140902/random-output/pull/69))
+- schedule Renovate for Saturday mornings JST ([#73](https://github.com/yuma140902/random-output/pull/73))
+- change lockFileMaintenance schedule ([#71](https://github.com/yuma140902/random-output/pull/71))
+
 ## [0.3.9](https://github.com/yuma140902/random-output/compare/v0.3.8...v0.3.9) - 2026-09-20
 
 ### Other
