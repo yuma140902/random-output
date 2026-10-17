@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.11](https://github.com/yuma140902/random-output/compare/v0.3.10...v0.3.11) - 2026-10-17
+
+### Other
+
+- *(deps)* lock file maintenance ([#74](https://github.com/yuma140902/random-output/pull/74))
+- *(deps)* update actions/download-artifact action to v8.0.2 ([#76](https://github.com/yuma140902/random-output/pull/76))
+- *(deps)* update actions/upload-artifact digest to cf430e0 ([#75](https://github.com/yuma140902/random-output/pull/75))
+- *(renovate)* remove hourly PR limit ([#77](https://github.com/yuma140902/random-output/pull/77))
+
 ## [0.3.10](https://github.com/yuma140902/random-output/compare/v0.3.9...v0.3.10) - 2026-10-04
 
 ### Other
