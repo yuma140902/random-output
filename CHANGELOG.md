@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.12](https://github.com/yuma140902/random-output/compare/v0.3.11...v0.3.12) - 2026-11-07
+
+### Other
+
+- *(deps)* lock file maintenance ([#79](https://github.com/yuma140902/random-output/pull/79))
+- *(deps)* update swatinem/rust-cache digest to d1527c8 ([#80](https://github.com/yuma140902/random-output/pull/80))
+
 ## [0.3.11](https://github.com/yuma140902/random-output/compare/v0.3.10...v0.3.11) - 2026-10-17
 
 ### Other
