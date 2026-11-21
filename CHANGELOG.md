@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13](https://github.com/yuma140902/random-output/compare/v0.3.12...v0.3.13) - 2026-11-21
+
+### Other
+
+- *(deps)* lock file maintenance ([#83](https://github.com/yuma140902/random-output/pull/83))
+- *(deps)* update release-plz/action digest to 66b324f ([#82](https://github.com/yuma140902/random-output/pull/82))
+
 ## [0.3.12](https://github.com/yuma140902/random-output/compare/v0.3.11...v0.3.12) - 2026-11-07
 
 ### Other
